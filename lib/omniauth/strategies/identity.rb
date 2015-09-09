@@ -29,6 +29,16 @@ module OmniAuth
 
       def callback_phase
         @env['omniauth.params'] = request.params || {}
+
+        if request.params['origin']
+          origin = request.params['origin']
+        elsif env['HTTP_REFERER'] && !env['HTTP_REFERER'].match(/#{request_path}$/)
+          origin = env['HTTP_REFERER']
+        end
+
+        @env['omniauth.origin'] = origin
+        @env['omniauth.origin'] = nil if origin == ''
+
         return fail!(:invalid_credentials) unless identity
         super
       end
