@@ -28,6 +28,7 @@ module OmniAuth
       end
 
       def callback_phase
+        @env['omniauth.params'] = request.params || {}
         return fail!(:invalid_credentials) unless identity
         super
       end
